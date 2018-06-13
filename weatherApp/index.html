@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en-us" ng-app="weatherApp">
+    <head>
+        <title>Weather App</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!--Load bootstrap and fontawesome via CDN -->
+        <link rel="stylesheet" href=".././bootstrap-4.0.0-dist/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src=".././bootstrap-4.0.0-dist/js/bootstrap.min.js"></script>
+        <script src="//code.angularjs.org/1.6.9/angular.min.js"></script>
+        <script src="//code.angularjs.org/1.6.9/angular-route.min.js"></script>
+        <script src="//code.angularjs.org/1.6.9/angular-resource.min.js"></script>
+        <script src="weatherApp.js"></script>
+        <style>
+            html,body,input,select, testarea
+            {
+                font-size: 1.05em !important;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <nav class="navbar navbar-default">
+                <div class="container">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="/">Weather</a>
+                    </div>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#"><i class="fa fa-home"></i>Home</a></li>
+                    </ul>
+                
+                </div>
+            </nav>
+        </header>
+        <hr/>
+        <div class="container">
+          <div ng-view></div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,395 @@
+
+What problem Angularjs 
+-> Update/manage html and javascript, logic and variable simultaneoulsy 
+    Updating DOM with property simultaneously
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+Model, View , Whatever
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+Model - DATA or thing that defines data or variables i.e Js file
+View - Whatever user see's/interact i.e html file
+
+Controllers, ViewModels, Whatever are the things that bind Model and View.
+
+MVC -  Model View Controller
+MVVM - Model View ViewModel
+
+AnguluarJS has a thing that bind variable and object in model to the view in htmk or DOM.
+So angularjs has MV* - Model View Whatever
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+HTML Aside
+-------------------------------------------------------------------------------------------------------------------------------------------
+Custom Attributes : Attribute defined by customer/user which are not present in html library are called custom attribute.
+If you add such attribute in html page then such attribute remain in DOM tree which can be access using 
+$("element").attr("attribute-name")
+
+HTML5 allows us to define custom attribute by simply adding 'data-customAttributeName'.
+Same does the AngularJS it adds its own set of attribute which are preceeded using 'ng'.
+We can also define data-ng-angularDefinedAttribute.
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+Javascript Aside - Global Namespace
+-------------------------------------------------------------------------------------------------------------------------------------------
+Suppose I have two JS file app1.js and utility.js
+
+// code in utlity.js
+
+// code in app.js
+var person = 'Tony';
+logFunction();
+
+// so the output will be Tony, though the function is defined in utility.js and called in app.js, due to global namespace vale of 
+// variable 'person' gets over ride 
+
+// to avoid this we can modifiy utility.js like
+// then modified code in app.js will be
+var person = 'Tony';
+statusPerson.logFunction();
+
+//output  - Steve
+// to override this we could make changes like 
+// statusPerson.person = 'Tony'
+
+the above demo shows how we can pollute the variables in global namespace
+AngularJS tries to maintain that this global namespace is not violated or polluted.
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+Structure of AngularJS application
+
+Modules, Apps and Controllers
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+Dependency Injetion - Giving a function an object, Rather than creating an object inside a function, you pass it to the function.
+-------------------------------------------------------------------------------------------------------------------------------------------
+//code
+
+var Person = function(firstName. lastName){
+    this.firstName = firstName;
+    this.lastName = lastName;
+}
+
+function logPerson(){
+    var john = new Person('John','Doe');
+    console.log(john);
+}
+
+logPerson();
+
+In the above code logPerson is dependent on john object.
+Rather than creating object inside function if we created that object outside the function and then pass/Inject that object into
+that function so as to log that person is what called DEPENDENCY INJECTION.
+updated code:
+var Person = function(firstName. lastName){
+    this.firstName = firstName;
+    this.lastName = lastName;
+}
+
+ var john = new Person('John','Doe');
+ 
+function logPerson(person){
+   
+    console.log(person);
+}
+
+logPerson(john);
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+The Scope Service
+-------------------------------------------------------------------------------------------------------------------------------------------
+$scope is object of Scope Service, that  involes dependency injection.
+
+All angular defined services variable start with '$' symbol so as we can distinguish between angular and user defined services.
+
+scope is as object that is used to bind our controller data with the DOM.
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+Javascript Aside - Functions and String
+-------------------------------------------------------------------------------------------------------------------------------------------
+Minification:  Shrinking the size of files for faster download, we noramlly add '.min' to the name of the file, so 'file.js'
+becomes 'file.min.js' so we can tell the difference.
+
+Javascript minifier
+
+//code
+myApp.controller('mainController', function($log, $scope){
+    
+    $log.error('This is an error');
+});
+
+//for the above code below is the minified code
+
+myApp.controller("mainController",function(r,o){r.error("This is an error")});
+
+When we replace and run the minified code it gave us error, saving error in injection.
+To overcome this, we define an array as a second parameter to the controller function like:
+
+myApp.controller('mainController', ['$log','$scope',function($log, $scope){
+    
+    $log.error('This is an error');
+}]);
+
+In the above array we define all the injected services by the controller function and last element of that array is the controller function 
+its self, so the minified version of the above changed code is:
+
+myApp.controller("mainController",["$log","$scope",function(r,o){r.error("This is an error")}]);
+
+And the above codes run successfuly, hence we can conclude that:
+- Minification removes extra spaces from code, changes variables name.
+- Hence to apply minification, protect our code from breaking after minification of any user defined controller we must declare all the 
+  inject services in the array first and the element should be the function.
+- Sequence in which we define the service name in the array should be same as the parameters that we pass to the controller function
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+Scope and Interpolation 
+-------------------------------------------------------------------------------------------------------------------------------------------
+Interpolation - Creating a string by combining strings and placeholders/variables
+ex> 'My name is'+ name is interpolated, and results in 'My name is Tony'.
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+Directives and Two way data binding
+-------------------------------------------------------------------------------------------------------------------------------------------
+Directive - An instruction to angularjs to manipulate a piece of the DOM.
+ex> this could be 'ADD A CLASS', 'HIDE THIS', 'CREATE THIS' etc..
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+Watchers and the Digest Loop
+-------------------------------------------------------------------------------------------------------------------------------------------
+Each action DOM is recorded and added to the browser Event Loop.
+Angular add 'ANGULAR CONTEXT' on that top.
+When ever we add any  new variable/function to the scope and bind/interpolate it to the DOM/Page, its entry is added in Angular Context as watchers in Watch List.
+watcher contains entry for its old value and new value.
+In Angular Context there is a DIGEST LOOPS, which constantly checks for ang change occured in DOM so that it can update the Watcher from WatchList.
+Digest loop asks question that 'Has something changed?', it check for each value in Watch List and updates the old and new value entry, then it updates repective value in DOM and Code, after this it again runs cycle to check that any changes has occured after updating that value.
+
+How does angular keeps track of each record changes?
+-> $scope object internally runs a method
+        $scope.$apply(function(){
+        // variable /function on which we need to keep watch on
+        
+        });
+This method runs the digest cycle for all variables and function defined under $scope.
+
+setTimeout(function, number); // This function runs a seperate thread other than angular, so any change in scope variable/function
+will not run digest cycle for that change.
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+Common Directive
+-------------------------------------------------------------------------------------------------------------------------------------------
+ng-if = Remove/Add enter piece element of page from DOM based on truth value of javascript expression.
+ng-show = Remove/Add ng-hide class to the element of page from DOM based on truth value of javascript expression.
+ng-hide = Remove/Add ng-hide class to the element of page from DOM based on truth value of javascript expression.
+ng-class = "{ 'class-name' : expression,.. }" insert/removes css classes based on expression.
+ng-cloak = Hides the angularJS code from HTML page while page is loading.
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+Javascript Aside - The XMLHTTPRequest Object
+-------------------------------------------------------------------------------------------------------------------------------------------
+XMLHTTPRequest Object is native browser object which has capability of firing a request from your code as you hit it in browser.
+It was invented by Microsoft and latter was adapted by all browser.
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+External Data and $http
+-------------------------------------------------------------------------------------------------------------------------------------------
+$http is a wrapper of angularJS for XMLHTTPRequest object.
+it thas many method, out of which most comman are:
+$http.get(url).success(function (result){}) // value that we pass to this function is the response object returned by api
+    .error(function(result, status){});
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+HTML and Javascript Aside - Single page app and Hash
+-------------------------------------------------------------------------------------------------------------------------------------------
+In js, there are may events, one of which is HashChange, means if we give an id to a html element and href it like href"#idName" then, this gets appended in the url, javascript detect this changes and can perform any action if this url changes.
+In this #hashUrl we can also provide path to the file like href="#/dir/file", this concept is used by angularJS in Single page APP.
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+Javascript Aside - Singletons
+-------------------------------------------------------------------------------------------------------------------------------------------
+Singletons - The one and only copy of object.
+All services that we inject in controller are Singleton object i.e only one copy is created because they are providing same service for all 
+the controller in which they are injected.
+
+The above rule falls false only to $scope object, reason is $scope is child object of the main object $rootScope, and child instances of $rootScope i.e $scope are injected as a different copy where ever it is injected.
+Even custom services that we create are also singleton object.
+
+factory and service are almost same.
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+Javascript and Angular Aside - Variable Names and Normalization
+-------------------------------------------------------------------------------------------------------------------------------------------
+Reusable Component - Custom DIRECTIVES
+Normalization - To make consistent to a standard.
+ex> while defining custom directive we would give it like <search-result my-directive=""></search-result>
+    and when we define this varible in JS like 
+    var my-directive='#'; // this would give error, because js variable cannot have '-' in their name
+    So converting JS Variable into HTML element name, attribute name or class name is what actull process of normalization is.
+    
+AngularJS does this in the following manner:
+- define that variable in CamelCase in JS file
+-  AngularJS will add '-' at the character where it finds UpperCase and Convert that character into lower case and Vice-versa.
+ex> JSVariable - myDirective
+    HTML DOM-  my-directive
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+Custom Directive
+-------------------------------------------------------------------------------------------------------------------------------------------
+Why do we need this? - Just to reuse our code template
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Scope , Obtuse Symbol
+-------------------------------------------------------------------------------------------------------------------------------------------
+  Custom directive can access the scope of controller in which it is called on HTML Page.
+  This is sometimes dangerous.
+  To keep the scope of our custom directive and the scope of controller in which it is access we need to add property to custom directive return object like
+     
+     return {
+     
+        scope: {
+        
+        } // this is called blocking scope property/ Isolated Scope
+     }
+ 
+ Now we need to pass variables values from our controller scope to custom directive scope,
+ for this we need to add custom attribute to our custom directive, it is like creating a hole in the diretive to pass the data
+ custom attribute under go same normalization process as custom directive.
+ 
+ So, on HTML
+ <search-result person-name="{{ controller property value}}"></search-result>
+ 
+ in JS file
+ 
+ return {
+    template: '{{personName}}',
+    scope: {
+        personName: "@" // @ symbol tells that this hole is a text hole
+    }
+ }
+ 
+ The above is a one way data binding
+ 
+ What if suppose I want to pass Object as a custom attribute
+ So, on HTML
+ <search-result personObject = "person"></search-result>
+ 
+ In JS file
+ return { 
+    template: '{{personObject.name}}'
+    scope: {
+    
+        personObject : "="  // = symbol tells that this hole is an Object Hole
+    }
+ }
+ 
+ It is a two way data binding, we need to be more carefull while doing some changes
+ 
+ What if suppose I want to pass function to the custom directive
+ 
+ // mainControllerScope
+ 
+ var person = { // person object properties};
+ 
+ function formattedFunction(personObject){
+ // logic
+ }
+ 
+ On html page
+ 
+ <search-result person-object = 'person' formatted-person-function='formattedFunction(aperson)' ></search-result>
+ 
+ // in directive code
+ angular.directive('searchResult', function(){
+    return {
+        template: '{{ formattedPersonFunction({aperson: personObject}) }}',
+        scope: {
+            personObject: "=",
+            formattedPersonFunction = "&"
+        }
+    }
+ 
+ });
+  
+  @ - for value/property
+  = - for Object
+  & - for function
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+Understanding 'Compile'
+-------------------------------------------------------------------------------------------------------------------------------------------
+Compile - When building code, the COMPLIER converts code to a lower-level language, then the LINKER generates a file the computer will actually interact with.
+
+Compile is an another property for our return object of custom directive,
+Compile: function(elem, attrs){
+        return {
+            pre: function(){},
+            post: function(){}
+        }
+}
+
+compile is basically used to add/remove any attribute from our custom directive template on the fly.
+suppose we have nested elements of our custom directives
+
+    <search>
+        <search></search>
+    </search>
+    
+Then in this scenario calling sequence will be
+1. Compile.
+2. pre-link for parent
+3. pre-link for child
+4. post-link for child
+5. post-link for parent.
+
+Though AngularJS docs has provided pre-link feature, it is not good idea to use it, instead of it try to use post-link.
+Instead of using compile property, we can directly use post-link as a property as,
+
+return {
+
+    scope: {},
+    link: function(scope, elements, attrs){
+    
+    }
+}
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+Transclusion
+-------------------------------------------------------------------------------------------------------------------------------------------
+Transclusion - Include one document inside another, Place a copy of one document at a particular point inside anoother.
+
+Suppose on my HTML page where I have inserted my custom directive element, I want to add some text or div over there so as to show it on my custom directive template. Or suppose I want to print different message on different pages where ever I have included my custom directive like
+
+// On html page
+<search-result> Hello der </search-result>
+
+Actually what happens is that this elemet on my html page gets replaced by template code which is defined in my custom directive.
+So the basic problem im facing is that I want to insert that message in my custom directive's template.
+So to achieve this we can use Transclusion, 
+
+// in our custom directive template we can define it as
+<ng-transclude></ng-transclude>
+
+// or
+
+<small ng-transclude></ng-transclude> 
+
+// and add a property to return object of custom directive as,
+
+return { 
+    transclude: true        // default it is false
+}
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+

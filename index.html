@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html lang="en-us" ng-app="myApp">
     <head>
         <title>Introduction to AngularJS</title>
         <meta http-equiv="X-UA-Compatible" content="IE=Edge">
@@ -9,7 +9,9 @@
         <link rel="stylesheet" href="bootstrap-4.0.0-dist/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="bootstrap-4.0.0-dist/js/bootstrap.min.js"></script>
+        <script src="//code.angularjs.org/1.6.9/angular.min.js"></script>
         <script src="app.js"></script>
+            
         <style>
             html,body,input,select, testarea
             {
@@ -32,26 +34,26 @@
             </nav>
         </header>
         <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <input id="btnStep1" type="button" value="Step1" />
-                 <input id="btnStep2" type="button" value="Step2" />
-                
-                <div id="step1" class="panel">
-                    <div class="panel-body">
-                        <h1>Step 1</h1>
-                        <p>This information is about step 1.</p>
-                    </div>
+            <div ng-controller="mainController">
+                <h2>Hello {{name}}</h2>
+                <div>
+                    <label>Whats your name?</label>
+                    <input type='text' ng-model='name' />
                 </div>
-                
-                <div id="step2" class="panel">
-                    <div class="panel-body">
-                        <h1>Step 2</h1>
-                        <p>This information is about step 2.</p>
-                    </div>
-                </div>
+                <hr>
+                <label>You have entered {{ name }}</label>
+                <hr/>
+                <search-result person-name = "{{name}}"> HELLO </search-result>
+                <hr />
+                <!--
+                <div search-result></div>
+                  <hr />
+                <div class="search-result"></div>
+                <hr />
+                -->
+                <!-- directive: search-result -->
             </div>
-        </div>
+        
             </div>
     </body>
 </html>
